@@ -19,6 +19,8 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
+	"strings"
 	"text/template"
 
 	"pack.ag/tftp"
@@ -48,6 +50,21 @@ var tmpl = template.Must(template.New("response").Parse(response))
 
 func echoHandler(w tftp.ReadRequest) {
 	log.Printf("Read %q requested from %s\n", w.Name(), w.Addr())
+
+	// If name is /size/<number>, generate <number> * x as output
+	const prefix string = "size/"
+	if strings.HasPrefix(w.Name(), prefix) {
+		size, err := strconv.Atoi(strings.TrimPrefix(w.Name(), prefix))
+		if err != nil {
+			log.Printf("Malformatted size (should be a /size/<number>): %q\n", w.Name())
+			return
+		}
+
+		w.WriteSize(int64(size))
+		w.Write([]byte(strings.Repeat("x", size)))
+		return
+	}
+
 	err := tmpl.Execute(w, values{
 		Hostname:   hostname,
 		ClientAddr: w.Addr().IP,
