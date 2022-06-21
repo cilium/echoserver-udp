@@ -7,7 +7,7 @@ the requested filename and client IP address in a similar to
 Example request:
 
 ```console
-$ curl tftp://localhost:6969/hello
+$ curl tftp://localhost:69/hello
 
 Hostname: deathstar
 
