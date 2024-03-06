@@ -1,8 +1,8 @@
-FROM golang:1.13.7-alpine as builder
+FROM golang:1.22.1-alpine3.19 as builder
 WORKDIR /go/src/app
 COPY . .
 RUN go build -o echoserver-tftp .
 
-FROM alpine:3.11
+FROM alpine:3.19.1
 COPY --from=builder /go/src/app/echoserver-tftp /usr/bin/echoserver-tftp
 ENTRYPOINT ["/usr/bin/echoserver-tftp"]
