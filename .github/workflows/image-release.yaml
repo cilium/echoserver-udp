@@ -51,6 +51,20 @@ jobs:
             quay.io/${{ github.repository_owner }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
             quay.io/${{ github.repository_owner }}/${{ matrix.name }}-ci:${{ github.sha }}
 
+      - name: Release Build ${{ matrix.name }} containerdisk
+        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+        id: docker_build_release_containerdisk
+        with:
+          context: .
+          file: ./Dockerfile.containerdisk
+          build-args: |
+            BASEIMAGE=quay.io/${{ github.repository_owner }}/${{ matrix.name }}@${{ steps.docker_build_release.outputs.digest }}
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            quay.io/${{ github.repository_owner }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}-containerdisk
+            quay.io/${{ github.repository_owner }}/${{ matrix.name }}-ci:${{ github.sha }}-containerdisk
+
       - name: Image Release Digest
         shell: bash
         run: |
@@ -59,10 +73,13 @@ jobs:
           job_name_capital=${job_name^^}
           job_name_underscored=${job_name_capital//-/_}
           echo "${job_name_underscored}_DIGEST := \"${{ steps.docker_build_release.outputs.digest }}\"" > image-digest/makefile-digest.txt
+          echo "${job_name_underscored}_CONTAINERDISK_DIGEST := \"${{ steps.docker_build_release_containerdisk.outputs.digest }}\"" >> image-digest/makefile-digest.txt
 
           echo "### ${{ matrix.name }}" > image-digest/${{ matrix.name }}.txt
           echo "" >> image-digest/${{ matrix.name }}.txt
           echo "\`quay.io/${{ github.repository_owner }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
+          echo "" >> image-digest/${{ matrix.name }}.txt
+          echo "\`quay.io/${{ github.repository_owner }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}-containerdisk@${{ steps.docker_build_release_containerdisk.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
           echo "" >> image-digest/${{ matrix.name }}.txt
 
       # Upload artifact digests
