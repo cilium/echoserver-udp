@@ -8,7 +8,7 @@ FROM ${BASEIMAGE} AS baseimage
 # Note: This stage runs on the build (and not the target) platform,
 # because libguestfs spawns a mini-VM to create and write ext4 images and
 # requires a native builder.
-FROM --platform=${BUILDPLATFORM:-linux/amd64} quay.io/kubevirt/libguestfs-tools:v1.8.4 AS guestfs
+FROM --platform=${BUILDPLATFORM:-linux/amd64} quay.io/kubevirt/libguestfs-tools:20260516_6307741530 AS guestfs
 
 ENV LIBGUESTFS_BACKEND=direct
 ENV LIBGUESTFS_PATH=/usr/local/lib/guestfs/appliance
