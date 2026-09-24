@@ -24,6 +24,8 @@ import (
 	"pack.ag/tftp"
 )
 
+const readyFile = "/tmp/udp-echo-ready"
+
 const response = `
 Hostname: {{or .Hostname "N/A"}}
 
@@ -75,6 +77,25 @@ func main() {
 	}
 
 	server.ReadHandler(tftp.ReadHandlerFunc(echoHandler))
+
+	addr, err := net.ResolveUDPAddr("udp", listen)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	conn, err := net.ListenUDP("udp", addr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	file, err := os.Create(readyFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := file.Close(); err != nil {
+		log.Fatal(err)
+	}
+
 	log.Printf("Listening on: %q\n", listen)
-	log.Fatal(server.ListenAndServe())
+	log.Fatal(server.Serve(conn))
 }
