@@ -1,4 +1,4 @@
-FROM golang:1.27.1-alpine3.24 as builder
+FROM golang:1.27.2-alpine3.24 as builder
 WORKDIR /go/src/app
 COPY . .
 RUN go build -o echoserver-tftp .
