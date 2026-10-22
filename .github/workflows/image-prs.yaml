@@ -91,7 +91,7 @@ jobs:
       # master branch pushes
       - name: CI Build ${{ matrix.name }}
         if: ${{ github.event_name != 'pull_request_target' }}
-        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         id: docker_build_ci_master
         with:
           context: .
@@ -104,7 +104,7 @@ jobs:
 
       - name: CI Build ${{ matrix.name }} containerdisk
         if: ${{ github.event_name != 'pull_request_target' }}
-        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         id: docker_build_ci_master_containerdisk
         with:
           context: .
@@ -130,7 +130,7 @@ jobs:
       # PR updates
       - name: CI Build ${{ matrix.name }}
         if: ${{ github.event_name == 'pull_request_target' }}
-        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         id: docker_build_ci_pr
         with:
           context: .
@@ -142,7 +142,7 @@ jobs:
 
       - name: CI Build ${{ matrix.name }} containerdisk
         if: ${{ github.event_name == 'pull_request_target' }}
-        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         id: docker_build_ci_pr_containerdisk
         with:
           context: .
